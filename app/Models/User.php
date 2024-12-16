@@ -21,6 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'country_id',
+        'state_id',
+        'city_id',
+        'address',
+        'zip_code',
     ];
 
     /**
@@ -44,5 +49,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the country that owns the user.
+     */
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 }
