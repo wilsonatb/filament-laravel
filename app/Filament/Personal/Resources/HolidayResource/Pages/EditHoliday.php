@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\HolidayResource\Pages;
+namespace App\Filament\Personal\Resources\HolidayResource\Pages;
 
-use App\Filament\Resources\HolidayResource;
+use App\Filament\Personal\Resources\HolidayResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 

@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('table_pets', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->enum('type', ['dog', 'cat', 'fish']);
-            $table->date('birth_date');
-            $table->timestamps();
+        Schema::table('timesheets', function (Blueprint $table) {
+            $table->timestamp('day_in')->nullable()->change();
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('table_pets');
+        Schema::table('timesheets', function (Blueprint $table) {
+            $table->timestamp('day_in')->nullable(false)->change();
+        });
     }
 };
