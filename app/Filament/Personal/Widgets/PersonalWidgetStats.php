@@ -16,6 +16,7 @@ class PersonalWidgetStats extends BaseWidget
             Stat::make('Pending Holidays', $this->getPendingHolidays(Auth::user())),
             Stat::make('Approved Holidays', $this->getApprovedHolidays(Auth::user())),
             Stat::make('Total Work', $this->getTotalWork(Auth::user())),
+            Stat::make('Total Pause', $this->getTotalPause(Auth::user())),
         ];
     }
 
@@ -38,17 +39,41 @@ class PersonalWidgetStats extends BaseWidget
         $timesheets = $user->timesheets()->where('type', 'work')->get();
 
         $totalWork = 0;
-        
+
         foreach ($timesheets as $timesheet) {
             $finishTime = Carbon::parse($timesheet->day_out);
             $startTime = Carbon::parse($timesheet->day_in);
 
-            $totalDuration = $startTime->diffInSeconds($finishTime);   
+            $totalDuration = $startTime->diffInSeconds($finishTime);
 
             $totalWork += $totalDuration;
         }
-        
-       // Convertir los segundos totales a horas y minutos
+
+        // Convertir los segundos totales a horas y minutos
+        $hours = floor($totalWork / 3600); // Segundos en una hora
+        $minutes = floor(($totalWork % 3600) / 60); // Resto de segundos convertido a minutos
+        $seconds = $totalWork % 60; // Resto de segundos
+
+        // Formatear con ceros iniciales
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+    }
+
+    protected function getTotalPause(User $user)
+    {
+        $timesheets = $user->timesheets()->where('type', 'pause')->get();
+
+        $totalWork = 0;
+
+        foreach ($timesheets as $timesheet) {
+            $finishTime = Carbon::parse($timesheet->day_out);
+            $startTime = Carbon::parse($timesheet->day_in);
+
+            $totalDuration = $startTime->diffInSeconds($finishTime);
+
+            $totalWork += $totalDuration;
+        }
+
+        // Convertir los segundos totales a horas y minutos
         $hours = floor($totalWork / 3600); // Segundos en una hora
         $minutes = floor(($totalWork % 3600) / 60); // Resto de segundos convertido a minutos
         $seconds = $totalWork % 60; // Resto de segundos

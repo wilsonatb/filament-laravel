@@ -6,8 +6,10 @@ use App\Filament\Personal\Resources\TimesheetResource;
 use App\Models\Timesheet;
 use Filament\Actions;
 use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ListTimesheets extends ListRecords
 {
@@ -31,6 +33,13 @@ class ListTimesheets extends ListRecords
                         $timeSheet->type = 'work';
                         $timeSheet->day_in = now();
                         $timeSheet->save();
+
+                        Notification::make()
+                            ->title('Has entrado a trabajar')
+                            ->body('Has comenzado a trabajar a las:'.Carbon::now())
+                            ->color('success')
+                            ->success()
+                            ->send();
                     }),
                 Actions\CreateAction::make(),
             ];
@@ -52,6 +61,13 @@ class ListTimesheets extends ListRecords
                     $timeSheet->type = 'work';
                     $timeSheet->day_in = now();
                     $timeSheet->save();
+
+                    Notification::make()
+                        ->title('Has entrado a trabajar')
+                        ->body('Has comenzado a trabajar a las:'.Carbon::now())
+                        ->color('success')
+                        ->success()
+                        ->send();
                 }),
             Action::make('stopWork')
                 ->label('Parar de trabajar')
@@ -62,6 +78,13 @@ class ListTimesheets extends ListRecords
                 ->action(function () use ($lasTimeSheet) {
                     $lasTimeSheet->day_out = now();
                     $lasTimeSheet->save();
+
+                    Notification::make()
+                        ->title('Has parado de trabajar')
+                        ->body('Has parado de trabajar a las:'.Carbon::now())
+                        ->color('success')
+                        ->success()
+                        ->send();
                 }),
             Action::make('inPause')
                 ->label('Comenzar pausar')
@@ -78,6 +101,13 @@ class ListTimesheets extends ListRecords
                     $timeSheet->type = 'pause';
                     $timeSheet->day_in = now();
                     $timeSheet->save();
+
+                    Notification::make()
+                        ->title('Comienzas tu pausa')
+                        ->body('Has comenzado tu pausa a las:'.Carbon::now())
+                        ->color('info')
+                        ->info()
+                        ->send();
                 }),
             Action::make('stopPause')
                 ->label('Parar pausa')
@@ -94,6 +124,13 @@ class ListTimesheets extends ListRecords
                     $timeSheet->type = 'work';
                     $timeSheet->day_in = now();
                     $timeSheet->save();
+
+                    Notification::make()
+                        ->title('Has vuelto a trabajar')
+                        ->body('Has vuelto a trabajar a las:'.Carbon::now())
+                        ->color('info')
+                        ->info()
+                        ->send();
                 }),
             Actions\CreateAction::make(),
         ];
