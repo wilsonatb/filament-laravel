@@ -18,8 +18,19 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class HolidayResource extends Resource
 {
     protected static ?string $model = Holiday::class;
-
+    protected static ?string $navigationLabel = 'Vacaciones';
     protected static ?string $navigationIcon = 'heroicon-o-calendar-date-range';
+    protected static ?string $navigationBadgeTooltip = 'El numero de vacaciones pendientes';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return parent::getEloquentQuery()->where('user_id', Auth::user()->id)->where('type', 'pending')->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return parent::getEloquentQuery()->where('user_id', Auth::user()->id)->where('type', 'pending')->count() > 0 ? 'warning' : 'info';
+    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -72,11 +83,11 @@ class HolidayResource extends Resource
             ->defaultSort('id', 'desc')
             ->filters([
                 SelectFilter::make('type')
-                ->options([
-                    'pending' => 'Pending',
-                    'approved' => 'Approved',
-                    'decline' => 'Decline',
-                ]),
+                    ->options([
+                        'pending' => 'Pending',
+                        'approved' => 'Approved',
+                        'decline' => 'Decline',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

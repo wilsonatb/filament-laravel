@@ -6,6 +6,8 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -17,6 +19,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Shanerbaner82\PanelRoles\PanelRoles;
+use ShuvroRoy\FilamentSpatieLaravelHealth\FilamentSpatieLaravelHealthPlugin;
 
 class AdminpanelPanelProvider extends PanelProvider
 {
@@ -40,6 +44,13 @@ class AdminpanelPanelProvider extends PanelProvider
                 //Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
             ])
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                PanelRoles::make()
+                    ->roleToAssign('super_admin')
+                    ->restrictedRoles(['super_admin']),
+                FilamentSpatieLaravelHealthPlugin::make()
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -54,6 +65,22 @@ class AdminpanelPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->navigationItems([
+                NavigationItem::make('Custom link')
+                    ->url('https://diwdesign.com', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-presentation-chart-line')
+                    ->sort(3)
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Personal Panel')
+                    ->url('/personal')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->visible(fn(): bool => auth()->user()?->hasAnyRole([
+                        'super_admin',
+                    ]))
+            ])
+            ->sidebarCollapsibleOnDesktop();
     }
 }
