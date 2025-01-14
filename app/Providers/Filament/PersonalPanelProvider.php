@@ -58,15 +58,6 @@ class PersonalPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->authMiddleware([
                 Authenticate::class,
-            ])
-            ->userMenuItems([
-                MenuItem::make()
-                    ->label('Admin Panel')
-                    ->url('/adminpanel')
-                    ->icon('heroicon-o-cog-6-tooth')
-                    ->visible(fn(): bool => auth()->user()?->hasAnyRole([
-                        'super_admin',
-                    ]))
             ]);
     }
 }

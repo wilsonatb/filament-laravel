@@ -10,6 +10,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ListTimesheets extends ListRecords
 {
@@ -36,7 +37,7 @@ class ListTimesheets extends ListRecords
 
                         Notification::make()
                             ->title('Has entrado a trabajar')
-                            ->body('Has comenzado a trabajar a las:'.Carbon::now())
+                            ->body('Has comenzado a trabajar a las:' . Carbon::now())
                             ->color('success')
                             ->success()
                             ->send();
@@ -64,7 +65,7 @@ class ListTimesheets extends ListRecords
 
                     Notification::make()
                         ->title('Has entrado a trabajar')
-                        ->body('Has comenzado a trabajar a las:'.Carbon::now())
+                        ->body('Has comenzado a trabajar a las:' . Carbon::now())
                         ->color('success')
                         ->success()
                         ->send();
@@ -81,7 +82,7 @@ class ListTimesheets extends ListRecords
 
                     Notification::make()
                         ->title('Has parado de trabajar')
-                        ->body('Has parado de trabajar a las:'.Carbon::now())
+                        ->body('Has parado de trabajar a las:' . Carbon::now())
                         ->color('success')
                         ->success()
                         ->send();
@@ -104,7 +105,7 @@ class ListTimesheets extends ListRecords
 
                     Notification::make()
                         ->title('Comienzas tu pausa')
-                        ->body('Has comenzado tu pausa a las:'.Carbon::now())
+                        ->body('Has comenzado tu pausa a las:' . Carbon::now())
                         ->color('info')
                         ->info()
                         ->send();
@@ -127,12 +128,22 @@ class ListTimesheets extends ListRecords
 
                     Notification::make()
                         ->title('Has vuelto a trabajar')
-                        ->body('Has vuelto a trabajar a las:'.Carbon::now())
+                        ->body('Has vuelto a trabajar a las:' . Carbon::now())
                         ->color('info')
                         ->info()
                         ->send();
                 }),
             Actions\CreateAction::make(),
+            Action::make('createPDF')
+                ->label('Crear PDF')
+                ->color('primary')
+                ->requiresConfirmation()
+                ->action(function () {
+                    $pdf = PDF::loadView('pdf.timesheet');
+                    return response()->streamDownload(function () use ($pdf) {
+                        echo $pdf->stream();
+                    }, 'timesheet.pdf');
+                }),
         ];
     }
 }

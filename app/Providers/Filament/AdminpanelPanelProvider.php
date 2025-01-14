@@ -19,6 +19,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use pxlrbt\FilamentSpotlight\SpotlightPlugin;
 use Shanerbaner82\PanelRoles\PanelRoles;
 use ShuvroRoy\FilamentSpatieLaravelHealth\FilamentSpatieLaravelHealthPlugin;
 
@@ -49,7 +50,8 @@ class AdminpanelPanelProvider extends PanelProvider
                 PanelRoles::make()
                     ->roleToAssign('super_admin')
                     ->restrictedRoles(['super_admin']),
-                FilamentSpatieLaravelHealthPlugin::make()
+                FilamentSpatieLaravelHealthPlugin::make(),
+                SpotlightPlugin::make(),
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -71,15 +73,6 @@ class AdminpanelPanelProvider extends PanelProvider
                     ->url('https://diwdesign.com', shouldOpenInNewTab: true)
                     ->icon('heroicon-o-presentation-chart-line')
                     ->sort(3)
-            ])
-            ->userMenuItems([
-                MenuItem::make()
-                    ->label('Personal Panel')
-                    ->url('/personal')
-                    ->icon('heroicon-o-cog-6-tooth')
-                    ->visible(fn(): bool => auth()->user()?->hasAnyRole([
-                        'super_admin',
-                    ]))
             ])
             ->sidebarCollapsibleOnDesktop();
     }

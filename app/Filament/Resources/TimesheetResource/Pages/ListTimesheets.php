@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TimesheetResource\Pages;
 
 use App\Filament\Resources\TimesheetResource;
+use App\Imports\MyTimeSheetImport;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -14,6 +15,9 @@ class ListTimesheets extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->color("primary")
+                ->use(MyTimeSheetImport::class),
         ];
     }
 }
