@@ -139,7 +139,8 @@ class ListTimesheets extends ListRecords
                 ->color('primary')
                 ->requiresConfirmation()
                 ->action(function () {
-                    $pdf = PDF::loadView('pdf.timesheet');
+                    $timesheets = Timesheet::where('user_id', Auth::user()->id)->get();
+                    $pdf = PDF::loadView('pdf.timesheet', ['timesheets' => $timesheets]);
                     return response()->streamDownload(function () use ($pdf) {
                         echo $pdf->stream();
                     }, 'timesheet.pdf');
